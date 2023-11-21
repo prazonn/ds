@@ -1,0 +1,601 @@
+1)STACK USING ARRAY
+
+#include<stdio.h>
+#include<stdlib.h>
+int n,top=-1,*stack;
+void push(int x)
+{
+if(top==n)
+return;
+stack[++top]=x;
+}
+int pop()
+{
+if(top==-1)
+return -1;
+return stack[top--];
+}
+int peek()
+{
+if(top==-1)
+return -1;
+return stack[top];
+}
+void display()
+{
+for(int i=top;i>=-1;i--)
+printf("%d",stack[i]);
+printf("\n\n");
+}
+int main()
+{
+n=10;
+printf("Initializing the size as 10 \n\n");
+stack=(int*)malloc(n*sizeof(int));
+printf("Push elements \n 1 \n 2 \n 3 in the stack");
+push(1);
+push(2);
+push(3);
+printf("display the elements : ");
+display();
+printf("The top element of stack = %d\n\n",peek());
+printf("pop the top  element of stack = %d\n\n ",pop());
+printf("pop the top  element of stack = %d\n\n ",pop());
+printf("Display the elements of the stack ");
+display();
+return 0;
+}
+
+
+
+2)INFIX TO POSTFIX
+
+
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<ctype.h>
+#define max_size 100
+int precedence(char operator)
+{
+switch(operator)
+{
+case '+':
+case '-':
+return 1;
+case '*':
+case '/':
+return 2;
+case '^':
+return 3;
+default:
+return -1;
+}
+}
+int isoperator(char ch)
+{
+return(ch=='+' || ch=='-' || ch=='*' || ch=='/' || ch=='^' );
+}
+char *infixtopostfix(char*infix)
+{
+int i,j;
+int len =strlen(infix);
+char *postfix=(char*)malloc(sizeof(char)*(len+2));
+char stack[max_size];
+int top=-1;
+for(i=0,j=0;i< len ;i++)
+{
+if(infix[i]== ' ' || infix[i]== '\t')
+continue;
+if(isalnum(infix[i]))
+{
+postfix[j++]=infix[i];
+}
+else if (infix[i]=='(')
+{
+stack[++top]=infix[i];
+}
+else if (infix[i]==')')
+{
+while(top>-1 && stack[top] !='(')
+postfix[j++]=stack[top--];
+if(top>-1 && stack[top] !='(')
+return "Invalid expression";
+else
+top--;
+}
+else if (isoperator(infix[i]))
+{
+while(top>-1&& precedence(stack[top])>=precedence(infix[i]))
+postfix[j++]=stack[top--];
+stack[++top]=infix[i];
+}
+}
+
+while(top>-1)
+{
+if (stack[top]=='(')
+{
+return " invalid expression";
+}
+postfix[j++]=stack[top--];
+}
+postfix[j]='\0';
+return postfix;
+}
+int main ()
+{
+char infix[max_size]="a+b(c^d-e)^(f+g*h)-i";
+char*postfix=infixtopostfix(infix);
+printf("%s\n",postfix);
+free(postfix);
+return 0;
+}
+
+
+
+3)SELECTION SORT
+
+#include<stdio.h>
+
+void swap(int *xp,int *yp)
+{
+int temp=*xp;
+*xp=*yp;
+*yp=temp;
+}
+void selectionSort(int arr[],int n)
+{
+int i,j,min_idx;
+for(i=0;i<n-1;i++)
+{
+min_idx=i;
+for(j=i+1;j<n;j++)
+
+if(arr[j]<arr[min_idx])
+min_idx=j;
+swap(&arr[min_idx],&arr[i]);
+}
+}
+
+void printArray(int arr[],int size)
+{
+int i;
+for(i=0;i<size;i++)
+{
+printf("%d",arr[i]);
+printf("\n");
+}
+}
+
+int main()
+{
+int arr[]={64,25,45,2,11};
+int n=sizeof(arr)/sizeof(arr[0]);
+selectionSort(arr,n);
+printf("Print sorted array :  ");
+printArray(arr,n);
+return 0;
+}
+
+
+4)LINEAR QUEUE USING ADT USING ARRAY
+
+#include<stdio.h>
+#include<stdio.h>
+#include<conio.h>
+#define n 5
+int main()
+{
+int queue[n], i,j=1,front=0,rear=0,ch=1,x=n,c;
+printf("Queue using array : ");
+printf("\n1.Insertion \n2.deletion \n3.display \n4.Exit");
+while(ch)
+{
+printf("Enter the choice : ");
+scanf("%d",&ch);
+switch(ch)
+{
+case 1:
+if(rear==x)
+printf("\nQueue is full");
+else
+{
+printf("\nEnter the no %d : ",j++);
+scanf("%d",&queue[rear++]);
+}
+break;
+
+case 2:
+if(front==rear)
+{
+printf("Queue is empty");
+}
+else
+{
+printf("The deleted element is %d  ",queue[front++]);
+x++;
+}
+break;
+
+case 3:
+printf("Queue elements are : ");
+if(front==rear)
+{
+printf("Queue is empty");
+}
+else
+{
+for(i=front;i<rear;i++)
+{
+printf("%d",queue[i]);
+printf("\n");
+}
+
+break;
+case 4:
+break;
+
+default:
+printf("Invalid choice ");
+}
+}
+}
+return 0;
+}
+
+
+5)DEQUE OF CIRCULAR QUEUE USING ARRAY
+                 
+#include <stdio.h>
+#include <stdlib.h>
+#define MAX_SIZE 5
+struct CircularQueue {
+    int *arr;
+    int front, rear, size;
+};
+struct CircularQueue* createQueue(int size) {
+    struct CircularQueue* queue = (struct CircularQueue*)malloc(sizeof(struct CircularQueue));
+    queue->arr = (int*)malloc(size * sizeof(int));
+    queue->front = queue->rear = -1;
+    queue->size = size;
+    return queue;
+}
+int isFull(struct CircularQueue* queue) {
+    return (queue->front == (queue->rear + 1) % queue->size);
+}
+int isEmpty(struct CircularQueue* queue) {
+    return (queue->front == -1);
+}
+void enqueue(struct CircularQueue* queue, int item) {
+    if (isFull(queue)) {
+        printf("Queue is full. Cannot enqueue %d\n", item);
+        return;
+    }
+    if (isEmpty(queue)) {
+        queue->front = queue->rear = 0;
+    } else {
+        queue->rear = (queue->rear + 1) % queue->size;
+    }
+    queue->arr[queue->rear] = item;
+    printf("Enqueued %d\n", item);
+}
+int dequeue(struct CircularQueue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty. Cannot dequeue.\n");
+        return -1;
+    }
+    int item = queue->arr[queue->front];
+    if (queue->front == queue->rear) {
+        queue->front = queue->rear = -1;
+    } else {
+        queue->front = (queue->front + 1) % queue->size;
+    }
+    printf("Dequeued %d\n", item);
+    return item;
+}
+void display(struct CircularQueue* queue) {
+    if (isEmpty(queue)) {
+        printf("Queue is empty.\n");
+        return;
+    }
+    int i = queue->front;
+    do {
+        printf("%d ", queue->arr[i]);
+        i = (i + 1) % queue->size;
+    } while (i != (queue->rear + 1) % queue->size);
+    printf("\n");
+}
+int main() {
+    struct CircularQueue* queue = createQueue(MAX_SIZE);
+
+    enqueue(queue, 10);
+    enqueue(queue, 20);
+    enqueue(queue, 30);
+    enqueue(queue, 40);
+    display(queue);
+    dequeue(queue);
+    dequeue(queue);
+    display(queue);
+   enqueue(queue, 50);
+    enqueue(queue, 60);
+    display(queue);
+    enqueue(queue, 70);  // This will cause overflow
+    free(queue->arr);
+    free(queue);
+    return 0;
+}
+
+
+
+6)LINKED LIST
+
+#include<stdio.h>
+#include<stdlib.h>
+
+struct node {
+    int data;
+    struct node *next;
+};
+
+struct node *createnode(int data) {
+    struct node *newnode = (struct node*)malloc(sizeof(struct node));
+    newnode->data = data;
+    newnode->next = NULL;
+    return newnode;
+}
+
+void insertAtBeginning(struct node **head, int data) {
+    struct node *newnode = createnode(data);
+    newnode->next = *head;
+    *head = newnode;
+}
+
+void insertAtEnd(struct node **head, int data) {
+    struct node *newnode = createnode(data);
+    if (*head == NULL) {
+        *head = newnode;
+    } else {
+        struct node *current = *head;
+        while (current->next != NULL) {
+            current = current->next;
+        }
+        current->next = newnode;
+    }
+}
+
+void insertAtMiddle(struct node **head, int data) {
+    struct node *newnode = createnode(data);
+    if (*head == NULL) {
+        *head = newnode;
+    } else {
+        struct node *slow = *head;
+        struct node *fast = (*head)->next;
+        while (fast != NULL && fast->next != NULL) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+        newnode->next = slow->next;
+        slow->next = newnode;
+    }
+}
+
+void deleteNode(struct node **head, int data) {
+    if (*head == NULL) {
+        return;
+    }
+
+    if ((*head)->data == data) {
+        struct node *temp = *head;
+        *head = (*head)->next;
+        free(temp);
+        return;
+    }
+
+    struct node *current = *head;
+    struct node *prev = NULL;
+
+    while (current != NULL && current->data != data) {
+        prev = current;
+        current = current->next;
+    }
+
+    if (current == NULL) {
+        // Data not found
+        return;
+    }
+
+    prev->next = current->next;
+    free(current);
+}
+
+void printList(struct node *head) {
+    struct node *current = head;
+    while (current != NULL) {
+        printf("%d -> ", current->data);
+        current = current->next;
+    }
+    printf("NULL\n");
+}
+
+int main() {
+    struct node *head = NULL;
+
+    insertAtBeginning(&head, 1);
+    insertAtEnd(&head, 3);
+    insertAtBeginning(&head, 0);
+    insertAtMiddle(&head, 2);
+
+    printf("Linked List after initial insertion: ");
+    printList(head);
+
+    deleteNode(&head, 2);
+    printf("Linked list after deletion: ");
+    printList(head);
+
+    insertAtEnd(&head, 4);
+    insertAtBeginning(&head, -1);
+
+    printf("Linked list after additional insertion: ");
+    printList(head);
+
+    // Free memory
+    while (head != NULL) {
+        struct node *temp = head;
+        head = head->next;
+        free(temp);
+    }
+
+    return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+7) INORDER AND PREORDER TRAVERSALS
+
+#include <stdio.h>
+#include <stdlib.h>
+
+// Structure for a binary tree node
+struct Node {
+    int data;
+    struct Node* left;
+    struct Node* right;
+};
+
+// Function to create a new node
+struct Node* newNode(int data) {
+    struct Node* node = (struct Node*)malloc(sizeof(struct Node));
+    node->data = data;
+    node->left = NULL;
+    node->right = NULL;
+    return node;
+}
+
+// Function to perform inorder traversal
+void inorderTraversal(struct Node* root) {
+    if (root == NULL) return;
+    
+    inorderTraversal(root->left);
+    printf("%d ", root->data);
+    inorderTraversal(root->right);
+}
+
+// Function to perform preorder traversal
+void preorderTraversal(struct Node* root) {
+    if (root == NULL) return;
+    
+    printf("%d ", root->data);
+    preorderTraversal(root->left);
+    preorderTraversal(root->right);
+}
+
+// Example usage
+int main() {
+    struct Node* root = newNode(1);
+    root->left = newNode(2);
+    root->right = newNode(3);
+    root->left->left = newNode(4);
+    root->left->right = newNode(5);
+
+    printf("Inorder traversal: ");
+    inorderTraversal(root);
+    printf("\n");
+
+    printf("Preorder traversal: ");
+    preorderTraversal(root);
+    printf("\n");
+
+    return 0;
+}
+
+
+
+8)BFS TRAVERSAL
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+#define max_vertices 50
+
+typedef struct graph_t {
+    int v;
+    bool adj[max_vertices][max_vertices];
+} graph;
+
+graph* graph_create(int v) {
+    graph *g = (graph*)malloc(sizeof(graph));
+    g->v = v;
+    for (int i = 0; i < v; i++) {
+        for (int j = 0; j < v; j++) {
+            g->adj[i][j] = false;
+        }
+    }
+    return g;
+}
+
+void graph_destroy(graph* g) {
+    free(g);
+}
+
+void graph_edge(graph* g, int v, int w) {
+    g->adj[v][w] = true;  // Fix: Change false to true to correctly represent an edge
+}
+
+void graph_bfs(graph* g, int s) {
+    bool visited[max_vertices];
+    for (int i = 0; i < g->v; i++) {
+        visited[i] = false;
+    }
+
+    int queue[max_vertices];
+    int front = 0, rear = 0;
+    visited[s] = true;
+    queue[rear++] = s;
+
+    while (front != rear) {
+        s = queue[front++];
+        printf("%d ", s);
+
+        for (int adjacent = 0; adjacent < g->v; adjacent++) {
+            if (g->adj[s][adjacent] && !visited[adjacent]) {
+                visited[adjacent] = true;
+                queue[rear++] = adjacent;
+            }
+        }
+    }
+}
+
+int main() {
+    graph* g = graph_create(4);
+    graph_edge(g, 0, 1);
+    graph_edge(g, 0, 2);
+    graph_edge(g, 1, 2);
+    graph_edge(g, 2, 0);
+    graph_edge(g, 2, 3);
+    graph_edge(g, 3, 3);
+
+    printf("Following BFS traversal from vertex 2: ");
+    graph_bfs(g, 2);
+
+    graph_destroy(g);
+    return 0;
+}
+
+
